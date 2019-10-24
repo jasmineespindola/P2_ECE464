@@ -1,6 +1,7 @@
 # user interface
 #comment testing
 #comment test sai
+#comment test jasmine
 print("\t\t\tProject 2: Fault Coverage of Pseudo Random TV's  /n")
 user_choice = 0
 while user_choice <= 0 | user_choice > 2:
