@@ -1,3 +1,5 @@
+# import math is used to access ceil function
+import math
 # user interface
 #comment testing
 #comment test sai
@@ -51,12 +53,27 @@ def tv_generation(bench_file, integer_seed ):
                 OutputFile.write(binary_value + '\n')
 # Incrementing Counter
                 temp+=1
+# generating TV_B.txt
+#resetting back to seed 
+        temp=integer_seed
+        OutputFile=open('TV_B.txt', 'w')
+        for i in range(255):
+                if(temp == 256):
+                    temp=0
+                else:
+                    temp=temp
+                binary_value=decimalToBinary(temp)
+# Making each seed 8 bits
+                rem=8-len(binary_value)
+                binary_value='0'*rem + binary_value  
+#determining and looping the number of times it needs to be appended
+                for j in range(math.ceil(number_of_input_bits/8)):
+                    binary_value = binary_value + binary_value
+                OutputFile.write(binary_value[0:number_of_input_bits] + '\n')            
+                temp+=1
 
 tv_generation(bench_file, integer_seed ) #//function call
 
-
-
-# generating TV_B.txt
 # generating TV_C.txt
 # generating TV_D.txt
 # generating TV_E.txt
