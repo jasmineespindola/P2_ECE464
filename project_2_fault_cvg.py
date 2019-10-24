@@ -2,7 +2,7 @@
 #comment testing
 #comment test sai
 #comment test jasmine
-print("\t\t\tProject 2: Fault Coverage of Pseudo Random TV's  /n")
+print("\t\t\tProject 2: Fault Coverage of Pseudo Random TV's  \n")
 user_choice = 0
 while user_choice <= 0 | user_choice > 2:
 	user_choice = input("choose what you'd like to do (1,2): \n ")
@@ -15,14 +15,47 @@ if user_choice == 1:
 # input : circuit.bench  integer seed
 # validate input   JEM- to do
 bench_file = input("input bench file name: \n ")
-integer_seed = input("input integer seed: \n ")
-int(integer_seed)
+integer_seed = int(input("input integer seed: \n "))
 
-tv_generation(bench_file, integer_seed ) //function call
 
+def Number_of_input_bits(bench_file):
+# open benchfile
+    net_File = open(bench_file, "r")
+    input_bits=0
+# count number of INPUTs
+    for line in net_File:
+        if(line[0:5] == 'INPUT'):
+            input_bits+=1
+        else:
+            input_bits+=0
+# return the number of input bits
+    return input_bits
+
+def tv_generation(bench_file, integer_seed ):
 # generating TV_A.txt
+        OutputFile=open('TV_A.txt', 'w')
+#Calculate the number of input bits in bench file
+        number_of_input_bits = Number_of_input_bits(bench_file)
 # use seed as starting point and extend zeros until length
-# Nbitcounter function
+# decimal to binary conversion function
+        def decimalToBinary(n): 
+# Remove 0b from built-in binary conversion function
+                return bin(n).replace("0b","")
+        temp=integer_seed
+#Generate 255 test vectors    
+        for i in range(255):
+                binary_value=decimalToBinary(temp)
+                rem=number_of_input_bits-len(binary_value)
+                binary_value='0'*rem + binary_value
+#Writing in Output file to generate TV_A.txt
+                OutputFile.write(binary_value + '\n')
+# Incrementing Counter
+                temp+=1
+
+tv_generation(bench_file, integer_seed ) #//function call
+
+
+
 # generating TV_B.txt
 # generating TV_C.txt
 # generating TV_D.txt
@@ -30,8 +63,8 @@ tv_generation(bench_file, integer_seed ) //function call
 
 
 # 2: fault coverage
-else:
-	print("performing test vector generation")
+#else:
+	#print("performing test vector generation")
 
 
 
