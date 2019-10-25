@@ -4,22 +4,11 @@ import math
 #comment testing
 #comment test sai
 #comment test jasmine
-print("\t\t\tProject 2: Fault Coverage of Pseudo Random TV's  \n")
-user_choice = 0
-while user_choice <= 0 | user_choice > 2:
-	user_choice = input("choose what you'd like to do (1,2): \n ")
-	int(user_choice)
-	print(" error. invalid user option. try again")
-
-# 1: test vector generation
-if user_choice == 1:
-	print("performing test vector generation")
-# input : circuit.bench  integer seed
-# validate input   JEM- to do
-bench_file = input("input bench file name: \n ")
-integer_seed = int(input("input integer seed: \n "))
-
-
+# decimal to binary conversion function
+def decimalToBinary(n): 
+# Remove 0b from built-in binary conversion function
+        return bin(n).replace("0b","")
+        
 def Number_of_input_bits(bench_file):
 # open benchfile
     net_File = open(bench_file, "r")
@@ -39,10 +28,7 @@ def tv_generation(bench_file, integer_seed ):
 #Calculate the number of input bits in bench file
         number_of_input_bits = Number_of_input_bits(bench_file)
 # use seed as starting point and extend zeros until length
-# decimal to binary conversion function
-        def decimalToBinary(n): 
-# Remove 0b from built-in binary conversion function
-                return bin(n).replace("0b","")
+
         temp=integer_seed
 #Generate 255 test vectors    
         for i in range(255):
@@ -71,12 +57,30 @@ def tv_generation(bench_file, integer_seed ):
                     binary_value = binary_value + binary_value
                 OutputFile.write(binary_value[0:number_of_input_bits] + '\n')            
                 temp+=1
+def main():
 
-tv_generation(bench_file, integer_seed ) #//function call
+        print("\t\t\tProject 2: Fault Coverage of Pseudo Random TV's  \n")
+        user_choice = 0
+        while user_choice <= 0 | user_choice > 2:
+                user_choice = input("choose what you'd like to do (1,2): \n ")
+                int(user_choice)
+                print(" error. invalid user option. try again")
+
+        # 1: test vector generation
+        if user_choice == 1:
+                print("performing test vector generation")
+        # input : circuit.bench  integer seed
+        # validate input   JEM- to do
+        bench_file = input("input bench file name: \n ")
+        integer_seed = int(input("input integer seed: \n "))
+
+        tv_generation(bench_file, integer_seed ) #//function call
 
 # generating TV_C.txt
 # generating TV_D.txt
 # generating TV_E.txt
+
+main()
 
 
 # 2: fault coverage
