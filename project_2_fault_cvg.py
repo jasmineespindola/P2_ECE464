@@ -1,5 +1,5 @@
 from __future__ import print_function
-# import math is used to access ceil function
+import csv
 import math
 import os
 
@@ -478,24 +478,31 @@ def tv_generation(bench_file, integer_seed ):
 
 def fault_coverage(batch_size, bench_file):
 	TVS = ["TV_A.txt", "TV_B.txt", "TV_C.txt", "TV_D.txt", "TV_E.txt"]
-	tvs = [tv_a[0:24], tv_b[0:24], tv_c[0:24], tv_d[0:24], tv_e[0:24]]
+	length_TV_list = len(TVS)
+
+	# tvs = [tv_a[0:24] , tv_b[0:24], tv_c[0:24], tv_d[0:24], tv_e[0:24]]   # used to store percents?
 	# print first line stuff to f_cvg.csv
 	# JEM-Creating fault cvg file to write,read, append to
-	f_cvg = open("f_cvg.csv", "w+")
-	f_cvg.write("|BATCH #|    A    |    B    |    C    |    D    |    E    | seed=")
+	first_line_csv = ['BATCH #', 'A', 'B', 'C', 'D', 'E', ' seed = ', seed_integer,'batch size = ', batch_size]
+	with open('f_cvg.csv', 'w') as csvFile:
+		writer = csv.writer(csvFile)
+		writer.writerow(first_line_csv)
 	# open tv_a file
 	# get first line
 	# convert binary to dec and f_cvg.write
 	# print seed ? grab line from first file? or how do i know seed from first file --- TODO - sai
-	f_cvg.write("| batch size = batch_size  |\n")
-	f_cvg.write("---------------------------------------------------------------------------------------------------")
+
 	batch = 0
 	while batch < 25:
-		print("currently testing batch #:" + (batch+1) + "\n")
-		for tv_num in TVS:
+		current_batch_running = batch + 1
+
+		print("currently testing batch #:" + str(current_batch_running) + "\n")
+		tv_num = 0
+		while tv_num < length_TV_list:
 			current_tv_file = TVS[tv_num]
 			netFile = open(current_tv_file, "r")
 			print("opened" + current_tv_file + "\n")
+			i = 0
 			while i < batch_size:
 				# iterate thru TVS in each file
 				#run prev script and append every time new tvs and pull new fault cvg value
