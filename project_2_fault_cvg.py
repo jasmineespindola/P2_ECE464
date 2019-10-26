@@ -453,6 +453,11 @@ def tv_generation(bench_file, integer_seed ):
 				for j in range(math.ceil(number_of_input_bits/8)):
 #Converting decimal temp1 to binary
 						binary_value = decimalToBinary(temp1)
+						if(len(binary_value) > 8):
+							binary_value = '00000000'
+							temp1 = 0
+						else:
+							binary_value = binary_value
 #find out number of zeros to append to binary value
 						rem = 8-len(binary_value)
 #append zeros to value
