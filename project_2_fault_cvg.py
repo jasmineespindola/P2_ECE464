@@ -389,6 +389,17 @@ def decimalToBinary(n):
 		return bin(n).replace("0b","")
 
 
+def binarytodecimal(binary):
+	binary1 = binary
+	decimal, i, n = 0, 0, 0
+	while(binary != 0):
+		dec = binary % 10
+		decimal = decimal + dec * pow(2, i)
+		binary = binary//10
+		i += 1
+	return decimal
+
+
 def Number_of_input_bits(bench_file):
 # open benchfile
 	net_File = open(bench_file, "r")
@@ -481,11 +492,12 @@ def fault_coverage(batch_size, bench_file):
 	length_TV_list = len(TVS)
 
 	# tvs = [tv_a[0:24] , tv_b[0:24], tv_c[0:24], tv_d[0:24], tv_e[0:24]]   # used to store percents?
-	
 	# open tv_a file
+	get_seed = open('TV_A.txt', 'r')
 	# get first line
-	# convert binary to dec and f_cvg.write
-	# print seed ? grab line from first file? or how do i know seed from first file --- TODO - sai
+	# convert binary to dec
+	seed_binary = get_seed.readline()
+	seed_integer = int(seed_binary,2)
 
 
 	# JEM-Creating fault cvg file to write,read, append to
