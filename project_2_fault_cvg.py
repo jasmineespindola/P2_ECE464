@@ -1,9 +1,7 @@
 # import math is used to access ceil function
 import math
-# user interface
-#comment testing
-#comment test sai
-#comment test jasmine
+
+
 # decimal to binary conversion function
 def decimalToBinary(n): 
 # Remove 0b from built-in binary conversion function
@@ -82,23 +80,14 @@ def tv_generation(bench_file, integer_seed ):
                                 OutputFile.write(binary_value)
                         else:
                                 OutputFile.write(binary_value[0:(number_of_input_bits - bits_per_line )])
-                                OutputFile.write('\n')
-                                
-                                                              
-                        bits_per_line += 8
-                        
-#print the value if we have             
-                                
-                                
-                        
-                                
+                                OutputFile.write('\n')                                      
+                        bits_per_line += 8                             
                         temp1 += 1
                 temp += 1
 # generating TV_C.txt
 # generating TV_D.txt
 # generating TV_E.txt
 def main():
-
         print("\t\t\tProject 2: Fault Coverage of Pseudo Random TV's  \n")
         user_choice = 0
         while user_choice <= 0 | user_choice > 2:
@@ -114,16 +103,13 @@ def main():
         bench_file = input("input bench file name: \n ")
         integer_seed = int(input("input integer seed: \n "))
 
-        tv_generation(bench_file, integer_seed ) #//function call
+        tv_generation(bench_file, integer_seed ) 
 
 
 
 main()
 
 
-# 2: fault coverage
-#else:
-	#print("performing test vector generation")
 
 
 
