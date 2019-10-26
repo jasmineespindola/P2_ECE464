@@ -84,7 +84,6 @@ def tv_generation(bench_file, integer_seed ):
                         bits_per_line += 8                             
                         temp1 += 1
                 temp += 1
-# generating TV_C.txt
 # generating TV_D.txt
 # generating TV_E.txt
 def main():
