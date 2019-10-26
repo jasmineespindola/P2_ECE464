@@ -57,6 +57,43 @@ def tv_generation(bench_file, integer_seed ):
                     binary_value = binary_value + binary_value
                 OutputFile.write(binary_value[0:number_of_input_bits] + '\n')            
                 temp+=1
+# generating TV_C.txt
+        temp=integer_seed
+        OutputFile=open('TV_C.txt', 'w')
+        for i in range(255):
+                if(temp == 256):
+                    temp=0
+                else:
+                    temp=temp
+#storing temp in another variabel for the sake of looping
+                temp1=temp
+                bits_per_line = 0
+#run the loop till we get binary_value == number_of_input_bits 
+                for j in range(math.ceil(number_of_input_bits/8)):
+#Converting decimal temp1 to binary
+                        binary_value = decimalToBinary(temp1)
+#find out number of zeros to append to binary value
+                        rem = 8-len(binary_value)
+#append zeros to value
+                        binary_value='0'*rem + binary_value
+                        if(bits_per_line +8 <= number_of_input_bits):
+                                OutputFile.write(binary_value)
+                        else:
+                                OutputFile.write(binary_value[0:(number_of_input_bits - bits_per_line )])
+                                OutputFile.write('\n')
+                                
+                                                              
+                        bits_per_line += 8
+                        
+#print the value if we have 
+                        
+                             
+                                
+                                
+                        
+                                
+                        temp1+=1
+                temp+=1
 def main():
 
         print("\t\t\tProject 2: Fault Coverage of Pseudo Random TV's  \n")
