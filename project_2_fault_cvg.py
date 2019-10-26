@@ -483,6 +483,9 @@ def fault_coverage(batch_size, bench_file):
 	# JEM-Creating fault cvg file to write,read, append to
 	f_cvg = open("f_cvg.csv", "w+")
 	f_cvg.write("|BATCH #|    A    |    B    |    C    |    D    |    E    | seed=")
+	# open tv_a file
+	# get first line
+	# convert binary to dec and f_cvg.write
 	# print seed ? grab line from first file? or how do i know seed from first file --- TODO - sai
 	f_cvg.write("| batch size = batch_size  |\n")
 	f_cvg.write("---------------------------------------------------------------------------------------------------")
