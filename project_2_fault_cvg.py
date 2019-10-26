@@ -481,16 +481,19 @@ def fault_coverage(batch_size, bench_file):
 	length_TV_list = len(TVS)
 
 	# tvs = [tv_a[0:24] , tv_b[0:24], tv_c[0:24], tv_d[0:24], tv_e[0:24]]   # used to store percents?
-	# print first line stuff to f_cvg.csv
+	
+	# open tv_a file
+	# get first line
+	# convert binary to dec and f_cvg.write
+	# print seed ? grab line from first file? or how do i know seed from first file --- TODO - sai
+
+
 	# JEM-Creating fault cvg file to write,read, append to
 	first_line_csv = ['BATCH #', 'A', 'B', 'C', 'D', 'E', ' seed = ', seed_integer,'batch size = ', batch_size]
 	with open('f_cvg.csv', 'w') as csvFile:
 		writer = csv.writer(csvFile)
 		writer.writerow(first_line_csv)
-	# open tv_a file
-	# get first line
-	# convert binary to dec and f_cvg.write
-	# print seed ? grab line from first file? or how do i know seed from first file --- TODO - sai
+
 
 	batch = 0
 	while batch < 25:
