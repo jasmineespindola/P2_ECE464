@@ -8,7 +8,7 @@ import os
 # 2. gateCalc: function that will work on the logic of each gate
 # 3. inputRead: function that will update the circuit dictionary made in netRead to hold the line values
 # 4. basic_sim: the actual simulation
-# 5. main: The main function
+# 5. fault sim result: fault sim for each batch and returns percent covered for curr/prev batches
 
 
 # -------------------------------------------------------------------------------------------------------------------- #
@@ -365,23 +365,140 @@ def basic_sim(circuit):
 
 	return circuit
 
+########################################################################################################################
+# input: list of prev faults covered from prev batches
+# output: % faults covered by curr/prev batch
 
-def fault_cvg_result ( ckt_file , f_list_name , tv_file ) :
-	fs_result = open("fault_sim_result.txt", "w+")
-	fs_result.write("#input: " + ckt_file + "\n")
-	fs_result.write("#input: " + f_list_name + "\n")
-	fs_result.write("#input: " + input_name + "\n")
-	fs_result.write("\n")
-	# simulate no faults circuit
-	circuit = basic_sim(circuit)
-	print("\n *** Finished simulation - resulting circuit: \n")
-	print(circuit)
-	# Jasmine-this shows output
-	for y in circuit["OUTPUTS"][1]:
-		if not circuit[y][2]:
-			output = "NETLIST ERROR: OUTPUT LINE \"" + y + "\" NOT ACCESSED"
-			break
-		output = str(circuit[y][3]) + output
+def fault_sim_result(ckt_file, f_list_name, tv_file, prev_faults):
+	tvNumber = 0
+	# initializing list to add faults found
+	faults_Found = []
+
+	# Runs the simulator for each line of the input file
+	for line in inputFile:
+		# Reset circuit before start
+		print("\n *** Reseting circuit with unknowns... \n")
+		resetCircuit(circuit)
+		# Empty the "good" output value for each TV
+		output = ""
+		tvNumber = tvNumber + 1
+		# Do nothing else if empty lines, ...
+		if (line == "\n"):
+			continue
+		# ... or any comments
+		if (line[0] == "#"):
+			continue
+
+		# Removing the the newlines at the end and then output it to the txt file
+		line = line.replace("\n", "")
+		outputFile.write(line)  # write the TV to the output
+
+		# Removing spaces
+		line = line.replace(" ", "")
+
+		# Getting ready to simulate no faults circuit
+		print("\n before processing circuit dictionary...")
+		print(circuit)
+		print("\n ---> Now ready to simulate INPUT = " + line)
+		circuit = inputRead(circuit, line)
+		print(circuit)
+
+		if circuit == -1:
+			print("INPUT ERROR: INSUFFICIENT BITS")
+			outputFile.write(" -> INPUT ERROR: INSUFFICIENT BITS" + "\n")
+			# After each input line is finished, reset the netList
+			circuit = newCircuit
+			print("...move on to next input\n")
+			continue
+		elif circuit == -2:
+			print("INPUT ERROR: INVALID INPUT VALUE/S")
+			outputFile.write(" -> INPUT ERROR: INVALID INPUT VALUE/S" + "\n")
+			# After each input line is finished, reset the netList
+			circuit = newCircuit
+			print("...move on to next input\n")
+			continue
+
+		# simulate no faults circuit
+		circuit = basic_sim(circuit)
+		print("\n *** Finished simulation - resulting circuit: \n")
+		print(circuit)
+		# Jasmine-this shows output
+		for y in circuit["OUTPUTS"][1]:
+			if not circuit[y][2]:
+				output = "NETLIST ERROR: OUTPUT LINE \"" + y + "\" NOT ACCESSED"
+				break
+			output = str(circuit[y][3]) + output
+		# ^^^^^^^^^"output" will hold the "good" circuit output value
+		print("\n *** Summary of simulation: ")
+		print(line + " -> " + output + " written into output file. \n")
+		outputFile.write(" -> " + output + "\n")
+
+		# After each input line is finished, reset the circuit
+		print("\n *** Now resetting circuit back to unknowns... \n")
+		resetCircuit(circuit)
+
+		########################################################
+		# detectedFaultsforCurrentTV will be updated with all the detected SA faults in the current TV.
+		current_TV_Detected_Faults = sa_Fault_Simulator(flist, circuit, line, newCircuit, outputFile, output)
+		fs_result.write("\ntv" + str(tvNumber) + " = " + line + " -> " + str(output) + " (good)\n")  # JEM
+		# getting length of first dimension of list JEM
+		lengthList = len(current_TV_Detected_Faults[0])
+		# iterating through list to print output of TV @ fault JEM
+		fs_result.write("detected:\n")
+		i = 0
+		print("length of list: " + str(lengthList) + "\n")
+		while i < lengthList:
+			fs_result.write(
+				current_TV_Detected_Faults[0][i] + ":  " + line + " -> " + current_TV_Detected_Faults[1][i] + "\n")
+			# print("current_detected_faults[0][i]="+current_TV_Detected_Faults[0][i]+"\n") debug
+			# print("faults found list now:") debug
+			# print(*faults_Found, sep =",") debug
+			if (current_TV_Detected_Faults[0][i] not in faults_Found):
+				# add to faults_Found JEM DEBUG
+				faults_Found.append(current_TV_Detected_Faults[0][i])
+			# print("current_detected_faults[0][i]="+current_TV_Detected_Faults[0][i]+"\n") debug
+			# print("faults found list now:")debug
+			# print(*faults_Found, sep =",")debug
+			i = i + 1
+
+		outputFile.write('%s\n' % current_TV_Detected_Faults)
+
+		# After each input line is finished, reset the circuit
+		print("\n *** Now resetting circuit back to unknowns... \n")
+		resetCircuit(circuit)
+
+		print("\n circuit after resetting: \n")
+		print(circuit)
+		print("\n*******************\n")
+
+	# JEM printing summary of faults found
+	# delete flist as u find faults/add to faults_Found
+	for i in faults_Found:
+		if (i in flist):
+			# add to faults_Found JEM DEBUG
+			flist.remove(i)
+	undetectedFaults = len(flist)
+	total_faults_found = len(faults_Found)
+	# make list of undetected faults JEM
+	fs_result.write("\n\ntotal detected faults: " + str(total_faults_found) + "\n")
+	# for detected_fault in faults_Found: #debug
+	# fs_result.write('%s\n' % detected_fault) #debug
+	# print(*faults_Found, sep ="\n") debug
+
+	fs_result.write("\n\nundetected faults: " + str(undetectedFaults) + "\n")
+	for undetected_fault in flist:
+		fs_result.write('%s\n' % undetected_fault)
+	# fs_result.write(*flist, sep ="\n")
+	# print fault list JEM DEBUG
+	percentFaultsFound = 100 * float(total_faults_found) / float(totalNumFaultsPossible)
+	fs_result.write("\n\nfault coverage: " + str(total_faults_found) + "/" + str(totalNumFaultsPossible) + " = " + str(
+		percentFaultsFound) + "% \n")  # JEM
+
+	# closing fault sim result file
+	fs_result.close()
+
+#####################################################################################################################
+
 
 # decimal to binary conversion function
 def decimalToBinary(n): 
@@ -488,7 +605,7 @@ def tv_generation(bench_file, integer_seed ):
 
 
 def fault_coverage(batch_size, bench_file):
-	TVS = ["TV_A.txt", "TV_B.txt", "TV_C.txt", "TV_D.txt", "TV_E.txt"]
+	TVS = ["TV_A.txt"]  # , "TV_B.txt", "TV_C.txt", "TV_D.txt", "TV_E.txt"]    TODO CHANGE-- JUST USED FOR TESTING JEM
 	length_TV_list = len(TVS)
 
 	# tvs = [tv_a[0:24] , tv_b[0:24], tv_c[0:24], tv_d[0:24], tv_e[0:24]]   # used to store percents?
@@ -499,18 +616,15 @@ def fault_coverage(batch_size, bench_file):
 	seed_binary = get_seed.readline()
 	seed_integer = int(seed_binary,2)
 
-
 	# JEM-Creating fault cvg file to write,read, append to
-	first_line_csv = ['BATCH #', 'A', 'B', 'C', 'D', 'E', ' seed = ', seed_integer,'batch size = ', batch_size]
+	first_line_csv = ['BATCH #', 'A', 'B', 'C', 'D', 'E', ' seed = ', seed_integer, 'batch size = ', batch_size]
 	with open('f_cvg.csv', 'w') as csvFile:
 		writer = csv.writer(csvFile)
 		writer.writerow(first_line_csv)
 
-
 	batch = 0
 	while batch < 25:
 		current_batch_running = batch + 1
-
 		print("currently testing batch #:" + str(current_batch_running) + "\n")
 		tv_num = 0
 		while tv_num < length_TV_list:
@@ -520,8 +634,9 @@ def fault_coverage(batch_size, bench_file):
 			i = 0
 			while i < batch_size:
 				# iterate thru TVS in each file
+				percent_covered = fault_sim_result ()
 				#run prev script and append every time new tvs and pull new fault cvg value
-					# need to save variable in list of prev percent covered by list
+					# need to save variable in list of prev percent covered by list tvs[]
 
 				i += 1
 
