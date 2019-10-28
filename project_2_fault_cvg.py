@@ -563,6 +563,8 @@ def number_of_input_bits(bench_file):
 def tv_generation(bench_file, integer_seed):
 	# generating TV_A.txt
 	outputfile = open('TV_A.txt', 'w')
+	print('Writing in TV_A.txt...')
+	print('Done')
 	# Calculate the number of input bits in bench file
 	Number_of_input_bits = number_of_input_bits(bench_file)
 	# use seed as starting point and extend zeros until length
@@ -581,6 +583,8 @@ def tv_generation(bench_file, integer_seed):
 	# resetting back to seed
 	temp = integer_seed
 	outputfile = open('TV_B.txt', 'w')
+	print('Writing in TV_B.txt...')
+	print('Done')
 	for i in range(255):
 		if (temp == 256):
 			temp = 0
@@ -598,6 +602,8 @@ def tv_generation(bench_file, integer_seed):
 	# generating TV_C.txt
 	temp = integer_seed
 	outputfile = open('TV_C.txt', 'w')
+	print('Writing in TV_C.txt...')
+	print('Done')
 	for i in range(255):
 		if (temp == 256):
 			temp = 0
@@ -630,6 +636,8 @@ def tv_generation(bench_file, integer_seed):
 	# generating TV_D.txt
 	temp = integer_seed
 	outputfile = open('TV_D.txt', 'w')
+	print('Writing in TV_D.txt...')
+	print('Done')
 	for i in range(255):
 		temp = int(temp)
 		binary_value = decimaltobinary(temp)
@@ -646,6 +654,8 @@ def tv_generation(bench_file, integer_seed):
 # generating TV_E.txt
 	temp = integer_seed
 	outputfile = open('TV_E.txt', 'w')
+	print('Writing in TV_E.txt...')
+	print('Done')
 	for i in range(255):
 		temp = int(temp)
 		# storing temp in another variabel for the sake of looping
@@ -727,7 +737,7 @@ def main():
 		# input : circuit.bench  integer seed
 		# validate input to do optional
 		bench_file = input("input bench file name: \n ")
-		integer_seed = int(input("input integer seed: \n "))
+		integer_seed = int(input("input integer seed in [1:255]: \n "))
 		tv_generation(bench_file, integer_seed)
 	elif user_choice == 2:
 		print("performing fault coverage \n")
