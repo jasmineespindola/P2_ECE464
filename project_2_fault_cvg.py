@@ -504,23 +504,12 @@ def fault_sim_result(ckt_file, f_list_name, tv_file, prev_faults):
 
 
 # decimal to binary conversion function
-def decimalToBinary(n):
+def decimaltobinary(n):
 	int(n)
 	# Remove 0b from built-in binary conversion function
 	return bin(n).replace("0b", "")
 
-
-def binarytodecimal(binary):
-	binary1 = binary
-	decimal, i, n = 0, 0, 0
-	while (binary != 0):
-		dec = binary % 10
-		decimal = decimal + dec * pow(2, i)
-		binary = binary // 10
-		i += 1
-	return decimal
-
-
+# 8 bit lfsr
 def lfsr(binary_seed):
 	if len(binary_seed) < 8:
 		rem = 8 - len(binary_seed)
@@ -557,7 +546,7 @@ def lfsr(binary_seed):
 	return int(binary_seed1, 2)
 
 
-def Number_of_input_bits(bench_file):
+def number_of_input_bits(bench_file):
 	# open benchfile
 	net_File = open(bench_file, "r")
 	input_bits = 0
@@ -573,42 +562,42 @@ def Number_of_input_bits(bench_file):
 
 def tv_generation(bench_file, integer_seed):
 	# generating TV_A.txt
-	OutputFile = open('TV_A.txt', 'w')
+	outputfile = open('TV_A.txt', 'w')
 	# Calculate the number of input bits in bench file
-	number_of_input_bits = Number_of_input_bits(bench_file)
+	Number_of_input_bits = number_of_input_bits(bench_file)
 	# use seed as starting point and extend zeros until length
 
 	temp = integer_seed
 	# Generate 255 test vectors
 	for i in range(255):
-		binary_value = decimalToBinary(temp)
-		rem = number_of_input_bits - len(binary_value)
+		binary_value = decimaltobinary(temp)
+		rem = Number_of_input_bits - len(binary_value)
 		binary_value = '0' * rem + binary_value
 		# Writing in Output file to generate TV_A.txt
-		OutputFile.write(binary_value + '\n')
+		outputfile.write(binary_value + '\n')
 		# Incrementing Counter
 		temp += 1
 	# generating TV_B.txt
 	# resetting back to seed
 	temp = integer_seed
-	OutputFile = open('TV_B.txt', 'w')
+	outputfile = open('TV_B.txt', 'w')
 	for i in range(255):
 		if (temp == 256):
 			temp = 0
 		else:
 			temp = temp
-		binary_value = decimalToBinary(temp)
+		binary_value = decimaltobinary(temp)
 		# Making each seed 8 bits
 		rem = 8 - len(binary_value)
 		binary_value = '0' * rem + binary_value
 		# determining and looping the number of times it needs to be appended
-		for j in range(math.ceil(number_of_input_bits / 8)):
+		for j in range(math.ceil(Number_of_input_bits / 8)):
 			binary_value = binary_value + binary_value
-		OutputFile.write(binary_value[0:number_of_input_bits] + '\n')
+		outputfile.write(binary_value[0:Number_of_input_bits] + '\n')
 		temp += 1
 	# generating TV_C.txt
 	temp = integer_seed
-	OutputFile = open('TV_C.txt', 'w')
+	outputfile = open('TV_C.txt', 'w')
 	for i in range(255):
 		if (temp == 256):
 			temp = 0
@@ -617,10 +606,10 @@ def tv_generation(bench_file, integer_seed):
 		# storing temp in another variabel for the sake of looping
 		temp1 = temp
 		bits_per_line = 0
-		# run the loop till we get binary_value == number_of_input_bits
-		for j in range(math.ceil(number_of_input_bits / 8)):
+		# run the loop till we get binary_value == Number_of_input_bits
+		for j in range(math.ceil(Number_of_input_bits / 8)):
 			# Converting decimal temp1 to binary
-			binary_value = decimalToBinary(temp1)
+			binary_value = decimaltobinary(temp1)
 			if (len(binary_value) > 8):
 				binary_value = '00000000'
 				temp1 = 0
@@ -630,53 +619,53 @@ def tv_generation(bench_file, integer_seed):
 			rem = 8 - len(binary_value)
 			# append zeros to value
 			binary_value = '0' * rem + binary_value
-			if (bits_per_line + 8 <= number_of_input_bits):
-				OutputFile.write(binary_value)
+			if (bits_per_line + 8 <= Number_of_input_bits):
+				outputfile.write(binary_value)
 			else:
-				OutputFile.write(binary_value[0:(number_of_input_bits - bits_per_line)])
-				OutputFile.write('\n')
+				outputfile.write(binary_value[0:(Number_of_input_bits - bits_per_line)])
+				outputfile.write('\n')
 			bits_per_line += 8
 			temp1 += 1
 		temp += 1
 	# generating TV_D.txt
 	temp = integer_seed
-	OutputFile = open('TV_D.txt', 'w')
+	outputfile = open('TV_D.txt', 'w')
 	for i in range(255):
 		temp = int(temp)
-		binary_value = decimalToBinary(temp)
+		binary_value = decimaltobinary(temp)
 		# Making each seed 8 bits
 		rem = 8 - len(binary_value)
 		binary_value = '0' * rem + binary_value
 		# determining and looping the number of times it needs to be appended
-		for j in range(math.ceil(number_of_input_bits / 8)):
+		for j in range(math.ceil(Number_of_input_bits / 8)):
 			binary_value = binary_value + binary_value
-		OutputFile.write(binary_value[0:number_of_input_bits] + '\n')
-		temp = lfsr(decimalToBinary(temp))
+		outputfile.write(binary_value[0:Number_of_input_bits] + '\n')
+		temp = lfsr(decimaltobinary(temp))
 
 
 # generating TV_E.txt
 	temp = integer_seed
-	OutputFile = open('TV_E.txt', 'w')
+	outputfile = open('TV_E.txt', 'w')
 	for i in range(255):
 		temp = int(temp)
 		# storing temp in another variabel for the sake of looping
 		temp1 = temp
 		bits_per_line = 0
-		# run the loop till we get binary_value == number_of_input_bits
-		for j in range(math.ceil(number_of_input_bits / 8)):
+		# run the loop till we get binary_value == Number_of_input_bits
+		for j in range(math.ceil(Number_of_input_bits / 8)):
 			# Converting decimal temp1 to binary
-			binary_value = decimalToBinary(temp1)
+			binary_value = decimaltobinary(temp1)
 			rem = 8 - len(binary_value)
 			binary_value = '0' * rem + binary_value
 			# find out number of zeros to append to binary value
-			if (bits_per_line + 8 <= number_of_input_bits):
-				OutputFile.write(binary_value)
+			if (bits_per_line + 8 <= Number_of_input_bits):
+				outputfile.write(binary_value)
 			else:
-				OutputFile.write(binary_value[0:(number_of_input_bits - bits_per_line)])
-				OutputFile.write('\n')
+				outputfile.write(binary_value[0:(Number_of_input_bits - bits_per_line)])
+				outputfile.write('\n')
 			bits_per_line += 8
-			temp1 = lfsr(decimalToBinary(temp1))
-		temp =lfsr(decimalToBinary(temp))
+			temp1 = lfsr(decimaltobinary(temp1))
+		temp =lfsr(decimaltobinary(temp))
 
 
 
