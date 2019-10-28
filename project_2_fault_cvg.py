@@ -631,6 +631,10 @@ def tv_generation(bench_file, integer_seed):
 	temp = integer_seed
 	# Generate 255 test vectors
 	for i in range(255):
+		if temp == 256 :
+			temp = 0
+		else:
+			temp=temp
 		binary_value = decimaltobinary(temp)
 		rem = Number_of_input_bits - len(binary_value)
 		binary_value = '0' * rem + binary_value
