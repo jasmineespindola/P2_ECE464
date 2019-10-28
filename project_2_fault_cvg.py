@@ -377,7 +377,7 @@ def fault_sim_result(circuit, flist, tv_file, prev_faults):
 	# initializing list to add faults found
 	faults_Found = []
 
-	# Runs the simulator for each line of the input file aka f_list_name
+	# Runs the simulator for each line of the input file aka tv_file
 	for line in tv_file:
 		# Reset circuit before start
 		#print("\n *** Reseting circuit with unknowns... \n")
@@ -740,8 +740,12 @@ def tv_generation(bench_file, integer_seed):
 def fault_coverage(batch_size, bench_file, flist):
 	TVS = ["TV_A.txt"]  # , "TV_B.txt", "TV_C.txt", "TV_D.txt", "TV_E.txt"]    TODO CHANGE-- JUST USED FOR TESTING JEM
 	length_TV_list = len(TVS)
-
-	# tvs = [tv_a[0:24] , tv_b[0:24], tv_c[0:24], tv_d[0:24], tv_e[0:24]]   # used to store percents?
+	tv_a = []
+	tv_b = []
+	tv_c = []
+	tv_d = []
+	tv_e = []
+	prev_faults_found = [tv_a, tv_b, tv_c, tv_d, tv_e]   # used to store prev faults found
 	# open tv_a file
 	get_seed = open('TV_A.txt', 'r')
 	# get first line
@@ -755,26 +759,28 @@ def fault_coverage(batch_size, bench_file, flist):
 	with open('f_cvg.csv', 'w') as csvFile:
 		writer = csv.writer(csvFile)
 		writer.writerow(first_line_csv)
-
 	batch = 0
+	real_tv_line = 0
 	while batch < 25:
 		current_batch_running = batch + 1
 		print("currently testing batch #:" + str(current_batch_running) + "\n")
 		tv_num = 0
-
 		#create temp list of faults with n faults and make into tv_file
 		while tv_num < length_TV_list:
 			current_tv_file = TVS[tv_num]
 			netFile = open(current_tv_file, "r")
+			temp_tv_file = open("temp_tv.txt", "w")
 			print("opened" + current_tv_file + "\n")
 			i = 0
 			while i < batch_size:
-				# iterate thru TVS in each file
-				percent_covered = fault_sim_result(bench_file, flist, tv_file, prev_faults)
+				# add real_tv_line to temp_tv_file
+				real_tv_line += 1
+				i += 1
+			# calling fault_sim_result after tem_tv_file generated for each column
+			percent_covered = fault_sim_result(bench_file, flist, temp_tv_file, prev_faults_found)
 				# run prev script and append every time new tvs and pull new fault cvg value
 				# need to save variable in list of prev percent covered by list tvs[]
 
-				i += 1
 
 		batch += 1
 
