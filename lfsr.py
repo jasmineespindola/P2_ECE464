@@ -1,38 +1,36 @@
-def lfsr(S):
-    if(len(S)!=8):
-        return "Invalid Input"
+def lfsr(binary_seed):
+    if len(binary_seed) < 8:
+        rem = 8 - len(binary_seed)
+        binary_seed = '0' * rem + binary_seed
+    else:
+        binary_seed = binary_seed[0:8]
+    if binary_seed[0] == '0':
+        binary_seed = binary_seed + binary_seed[0]
+        binary_seed = binary_seed[1:9]
+        return int(binary_seed, 2)
         
-    elif(S[7] == '0'):
-        print(S[7])
-        S=S[7]+S
-        S=S[0:7]
-        
-    elif(S[7] == '1'):
-        S1=""
-        if(S[1]=='0'):
-            S1=S1+'1'
+    elif binary_seed[0] == '1':
+        binary_seed1 = ""
+        if binary_seed[5] == '0':
+            binary_seed1 = binary_seed1 + '1'
         else:
-            S1=S1+'0'
+            binary_seed1 = binary_seed1 + '0'
 
-        if(S[2]=='0'):
-            S1=S1+'1'
+        if binary_seed[4] == '0':
+            binary_seed1 = binary_seed1 + '1'
         else:
-            S1=S1+'0'
+            binary_seed1 = binary_seed1 + '0'
 
-        if(S[3]=='0'):
-            S1=S1+'1'
+        if binary_seed[3] == '0':
+            binary_seed1 = binary_seed1 + '1'
         else:
-            S1=S1+'0'
-        
-        S1=S[7]+S1
-        S1=S1+S[3:7]
+            binary_seed1 = binary_seed1 + '0'
+
+        binary_seed = binary_seed + binary_seed[0]
+        binary_seed = binary_seed[1:9]
+        binary_seed1 = binary_seed[0:3] + binary_seed1 + binary_seed[6:8]
     else:
         return "Invalid input"
-    return S1
+    return int(binary_seed1, 2)
 
-            
-        
-    
-        
-        
-    
+
