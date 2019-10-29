@@ -863,13 +863,16 @@ def fault_coverage(batch_size, bench_file, flist):
 				print("column incremented:" + str(column) + "\n")  # debug
 			elif column == 4:
 				print("column=4:" + str(column) + "\n")  # debug
-				column = 0
+				# column = 0
 				# TO DO PRINT to csv file
 				with open('f_cvg.csv', 'a') as csvFile:
 					writer = csv.writer(csvFile)
 					writer.writerow(row_csv)
+				row_csv = []
 				print("column reset:" + str(column) + "\n")  # debug
-				# need to save variable in list of prev percent covered by list tvs[]
+				break
+
+		# need to save variable in list of prev percent covered by list tvs[]
 		batch += 1
 
 
