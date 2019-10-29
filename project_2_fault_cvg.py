@@ -124,7 +124,7 @@ def netRead(netName):
     circuit["OUTPUTS"] = ["Output list", outputs]
     circuit["GATES"] = ["Gate list", gates]
 
-    print("\n bookkeeping items in circuit: \n")
+    #print("\n bookkeeping items in circuit: \n")
     #print(circuit["INPUT_WIDTH"])
     #print(circuit["INPUTS"])
     #print(circuit["OUTPUTS"])
@@ -844,6 +844,8 @@ def fault_coverage(batch_size, bench_file, flist):
             temp_tv_file = open("temp_tv.txt", "r")
             percent_covered = fault_sim_result(bench_file, flist, temp_tv_file, prev_faults_found)
             #  TODO - add percent to line
+            if column == 0:
+                row_csv.append(" ")
             row_csv.append(percent_covered)
             print("percent covered:" + str(percent_covered) + " \n")
             if column != 4:
@@ -854,7 +856,9 @@ def fault_coverage(batch_size, bench_file, flist):
                 print("column=4:" + str(column) + "\n")  # debug
                 column = 0
                 # TO DO PRINT to csv file
-                writer.writerow(row_csv)
+                with open('f_cvg.csv', 'a') as csvFile:
+                    writer = csv.writer(csvFile)
+                    writer.writerow(row_csv)
                 print("column reset:" + str(column) + "\n")  # debug
                 # need to save variable in list of prev percent covered by list tvs[]
         batch += 1
