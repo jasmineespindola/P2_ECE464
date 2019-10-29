@@ -290,6 +290,7 @@ def gateCalc(circuit, node):
 # FUNCTION: Updating the circuit dictionary with the input line, and also resetting the gates and output lines
 def inputRead(circuit, line):
 	print("line=" + line + "\n")
+	
 	# Checking if input bits are enough for the circuit
 	if len(line) < circuit["INPUT_WIDTH"][1]:
 		return -1
@@ -401,8 +402,8 @@ def fault_sim_result(circuit, flist, tv_file, prev_faults):
 	tvNumber = 0
 	# initializing list to add faults found
 	faults_Found = []
-	#print(" tv file:" + tv_file + "\n")
-	#print(" flist file:" + flist + "\n")
+	print(" tv file:" + str(tv_file) + "\n")
+	print(" flist file:" + str(flist) + "\n")
 	# Runs the simulator for each line of the input file aka tv_file
 	for line in tv_file:
 		# Reset circuit before start
@@ -805,13 +806,12 @@ def fault_coverage(batch_size, bench_file, flist):
 		# while loop go through TVA,B,C,D E after each batch is done
 		while column < 5:
 			print("column #:" + str(column) + "\n")
-			print("column")
 			current_tv_file = TVS[column]
 			tvFile = open(current_tv_file, "r")
-			temp_tv_file = open("temp_tv.txt", "w+")  #sai- TODO
+			temp_tv_file = open("temp_tv.txt", "w")
 			# print("opened" + current_tv_file + "\n")
 			lines_in_tv_file = tvFile.readlines()
-			print("just took in file and read lines for:" + current_tv_file + "\n") # debug
+			print("just took in file and read lines for:" + current_tv_file + "\n")  # debug
 			i = 0
 			while i < batch_size:
 				print("i<batch size=" + str(i) + "<" + str(batch_size) + "\n") # debug
@@ -819,12 +819,15 @@ def fault_coverage(batch_size, bench_file, flist):
 				# print(" current tv file: " + netFile + "\n")
 				# print("line is: " + line)
 				temp_tv_file.write(lines_in_tv_file[i])
-				print("just wrote line # to temp file: " + str(real_tv_line) + "\n") # debug
-				print("just wrote tv to temp file: " + str(lines_in_tv_file[real_tv_line]) + "\n") # debug
+				print("just wrote line # to temp file: " + str(i) + "\n") # debug
+				print("just wrote tv to temp file: " + str(lines_in_tv_file[i]) + "\n")  # debug
 				real_tv_line += 1
 				print("updated real tv line to:" + str(lines_in_tv_file[real_tv_line]) + " \n")
 				i += 1
 			# calling fault_sim_result after tem_tv_file generated for each column
+			# close temp for write and open for read
+			temp_tv_file.close()
+			temp_tv_file = open("temp_tv.txt", "r")
 			percent_covered = fault_sim_result(bench_file, flist, temp_tv_file, prev_faults_found)
 			print("percent covered:" + str(percent_covered) + " \n")
 			if column != 4:
