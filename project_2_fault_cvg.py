@@ -3,7 +3,6 @@ import csv
 import math
 import os
 
-
 # Function List:
 # 1. netRead: read the benchmark file and build circuit netlist
 # 2. gateCalc: function that will work on the logic of each gate
@@ -290,7 +289,7 @@ def gateCalc(circuit, node):
 # FUNCTION: Updating the circuit dictionary with the input line, and also resetting the gates and output lines
 def inputRead(circuit, line):
 	print("line=" + line + "\n")
-
+	print(type(circuit))
 	# Checking if input bits are enough for the circuit
 	if len(line) < circuit["INPUT_WIDTH"][1]:
 		return -1
@@ -396,7 +395,8 @@ def read_flist(flist_Input):
 # input: list of prev faults covered from prev batches
 # output: % faults covered by curr/prev batch
 
-def fault_sim_result(circuit, flist, tv_file, prev_faults):
+def fault_sim_result(cktFile, flist, tv_file, prev_faults):
+	circuit = netRead(cktFile)
 	flist = read_flist(flist)
 	totalNumFaultsPossible = len(flist)
 	tvNumber = 0
@@ -810,12 +810,12 @@ def fault_coverage(batch_size, bench_file, flist):
 			print("just took in file and read lines for:" + current_tv_file + "\n")  # debug
 			i = 0
 			while i < batch_size:
-				print("i<batch size=" + str(i) + "<" + str(batch_size) + "\n") # debug
+				print("i<batch size=" + str(i) + "<" + str(batch_size) + "\n")  # debug
 				# add real_tv_line to temp_tv_file
 				# print(" current tv file: " + netFile + "\n")
 				# print("line is: " + line)
 				temp_tv_file.write(lines_in_tv_file[i])
-				print("just wrote line # to temp file: " + str(i) + "\n") # debug
+				print("just wrote line # to temp file: " + str(i) + "\n")  # debug
 				print("just wrote tv to temp file: " + str(lines_in_tv_file[i]) + "\n")  # debug
 				real_tv_line += 1
 				print("updated real tv line to:" + str(lines_in_tv_file[real_tv_line]) + " \n")
