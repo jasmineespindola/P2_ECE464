@@ -738,7 +738,7 @@ def tv_generation(bench_file, integer_seed):
 		binary_value = '0' * rem + binary_value
 		# determining and looping the number of times it needs to be appended
 		for j in range(math.ceil(Number_of_input_bits / 8)):
-			binary_value = binary_value + binary_value
+			binary_value = binary_value[::-1] + binary_value[::-1]
 		outputfile.write(binary_value[0:Number_of_input_bits] + '\n')
 		temp = lfsr(decimaltobinary(temp))
 
@@ -761,8 +761,10 @@ def tv_generation(bench_file, integer_seed):
 			binary_value = '0' * rem + binary_value
 			# find out number of zeros to append to binary value
 			if (bits_per_line + 8 <= Number_of_input_bits):
-				outputfile.write(binary_value)
+				outputfile.write(binary_value[::-1])
 			else:
+				binary_value = binary_value[0:Number_of_input_bits]
+				binary_value = binary_value[::-1]
 				outputfile.write(binary_value[0:(Number_of_input_bits - bits_per_line)])
 				outputfile.write('\n')
 			bits_per_line += 8
