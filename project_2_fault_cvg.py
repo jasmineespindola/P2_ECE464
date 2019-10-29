@@ -810,7 +810,7 @@ def fault_coverage(batch_size, bench_file, flist):
 	# get first line
 	# convert binary to dec
 	seed_binary = get_seed.readline()
-	seed_integer = int(seed_binary, 2)
+	seed_integer = int(seed_binary[::-1], 2)
 	seed_string = "seed = "+str(seed_integer)
 	batch_size_string = "batch size = " + str(batch_size)
 	# JEM-Creating fault cvg file to write,read, append to
@@ -896,10 +896,10 @@ def main():
 		tv_generation(bench_file, integer_seed)
 	elif user_choice == 2:
 		print("performing fault coverage \n")
-		batch_size = int(input("input batch size: \n "))
+		batch_size = int(input("input batch size[1:10]: \n "))
 		while batch_size <= 0 or batch_size >= 10:
 			print('Invalid Batch Size')
-			batch_size = int(input("input batch size: \n "))
+			batch_size = int(input("input batch size[1:10]: \n "))
 		bench_file = input("input circuit bench file name: \n ")
 		f_list = input("input fault list file: ")
 		fault_coverage(batch_size, bench_file, f_list)
