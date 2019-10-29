@@ -401,12 +401,13 @@ def read_flist(flist_Input):
 # input: list of prev faults covered from prev batches
 # output: % faults covered by curr/prev batch
 
-def fault_sim_result(cktFile, flist, tv_file, column):
+def fault_sim_result(cktFile, flist_total, tv_file, column):
 	circuit = netRead(cktFile)
 	# keep an initial (unassigned any value) copy of the circuit for an easy reset
 	newCircuit = circuit
-	flist = read_flist(flist)
+	flist = read_flist(flist_total)
 	totalNumFaultsPossible = len(flist)
+	print("total faults possible: " + str(totalNumFaultsPossible) + "\n")
 	tvNumber = 0
 	# initializing list to add faults found
 	faults_Found = []
@@ -415,7 +416,7 @@ def fault_sim_result(cktFile, flist, tv_file, column):
 	# Runs the simulator for each line of the input file aka tv_file
 	for line in tv_file:
 		# Reset circuit before start
-		#print("\n *** Reseting circuit with unknowns... \n")
+		#print("\n *** Resetting circuit with unknowns... \n")
 		resetCircuit(circuit)
 		# Empty the "good" output value for each TV
 		output = ""
@@ -517,9 +518,10 @@ def fault_sim_result(cktFile, flist, tv_file, column):
 			# add to faults_Found JEM DEBUG
 			flist.remove(i)
 	undetectedFaults = len(flist)
-	for i in global_fault_list[column]:
-		if i not in faults_Found:
-			faults_Found.append(i)
+	#  for i in global_fault_list[column]:
+		#  if i not in faults_Found:
+			#  faults_Found.append(i)           #  jas UNDO UNDO UNDO UNDO UNDOOOOO JUST  TESTING
+
 	total_faults_found = len(faults_Found)
 	# make list of undetected faults JEM #comment out test next line
 	# fs_result.write("\n\ntotal detected faults: " + str(total_faults_found) + "\n")
@@ -823,7 +825,7 @@ def fault_coverage(batch_size, bench_file, flist):
 	real_tv_line = 0
 	while batch < 25:
 		current_batch_running = batch + 1
-		print("currently testing batch #:" + str(current_batch_running) + "\n")
+		#print("currently testing batch #:" + str(current_batch_running) + "\n")
 		column = 0
 		# create temp list of faults with n faults and make into tv_file
 		# while loop go through TVA,B,C,D E after each batch is done
