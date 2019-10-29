@@ -762,7 +762,7 @@ def tv_generation(bench_file, integer_seed):
 
 
 def fault_coverage(batch_size, bench_file, flist):
-	TVS = ["TV_A.txt"]  # , "TV_B.txt", "TV_C.txt", "TV_D.txt", "TV_E.txt"]    TODO CHANGE-- JUST USED FOR TESTING JEM
+	TVS = ["TV_A.txt", "TV_B.txt"]  #, "TV_C.txt", "TV_D.txt", "TV_E.txt"]    TODO CHANGE-- JUST USED FOR TESTING JEM
 	length_TV_list = len(TVS)
 	tv_a = []
 	tv_b = []
@@ -788,32 +788,42 @@ def fault_coverage(batch_size, bench_file, flist):
 	while batch < 25:
 		current_batch_running = batch + 1
 		print("currently testing batch #:" + str(current_batch_running) + "\n")
-		tv_num = 0
+		column = 0
 		# create temp list of faults with n faults and make into tv_file
 		# while loop go through TVA,B,C,D E after each batch is done
-		while tv_num < 5:
-			current_tv_file = TVS[tv_num]
-			netFile = open(current_tv_file, "r")
+		while column < 5:
+			print("column #:" + str(column) + "\n")
+			print("column")
+			current_tv_file = TVS[column]
+			tvFile = open(current_tv_file, "r")
 			temp_tv_file = open("temp_tv.txt", "w+")
 			# print("opened" + current_tv_file + "\n")
+			lines_in_tv_file = tvFile.readlines()
+			print("just took in file and read lines for:" + current_tv_file + "\n") # debug
 			i = 0
 			while i < batch_size:
+				print("i<batch size=" + str(i) + "<" + str(batch_size) + "\n") # debug
 				# add real_tv_line to temp_tv_file
 				# print(" current tv file: " + netFile + "\n")
-				lines = netFile.readlines()
 				# print("line is: " + line)
-				temp_tv_file.write(lines[real_tv_line])
+				temp_tv_file.write(lines_in_tv_file[i])
+				print("just wrote line # to temp file: " + str(real_tv_line) + "\n") # debug
+				print("just wrote tv to temp file: " + str(lines_in_tv_file[real_tv_line]) + "\n") # debug
 				real_tv_line += 1
+				print("updated real tv line to:" + str(lines_in_tv_file[real_tv_line]) + " \n")
 				i += 1
 			# calling fault_sim_result after tem_tv_file generated for each column
 			percent_covered = fault_sim_result(bench_file, flist, temp_tv_file, prev_faults_found)
-			if tv_num < length_TV_list:
-				tv_num += 1
-			elif tv_num == 4:
-				tv_num = 0
+			print("percent covered:" + str(percent_covered) + " \n")
+			if column != 4:
+				print("column is !=4:" + str(column) + "\n")  # debug
+				column += 1
+				print("column incremented:" + str(column) + "\n")  # debug
+			elif column == 4:
+				print("column=4:" + str(column) + "\n")  # debug
+				column = 0
+				print("column reset:" + str(column) + "\n")  # debug
 				# need to save variable in list of prev percent covered by list tvs[]
-
-
 		batch += 1
 
 
