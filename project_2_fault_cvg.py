@@ -867,10 +867,10 @@ def fault_coverage(batch_size, bench_file, flist):
 				print("column=4:" + str(column) + "\n")  # debug
 				# column = 0
 				# TO DO PRINT to csv file
-				with open('f_cvg.csv', 'a') as csvFile:
-					writer = csv.writer(csvFile, lineterminator='\n')
-					if row_csv:
-						writer.writerow(row_csv, lineterminator='\n')
+				with open('f_cvg.csv', 'a', newline='') as csvFile:
+					writer = csv.writer(csvFile)
+					if row_csv != []:
+						writer.writerow(row_csv)
 				row_csv = []
 				print("column reset:" + str(column) + "\n")  # debug
 				break
@@ -903,7 +903,7 @@ def main():
 	elif user_choice == 2:
 		print("performing fault coverage \n")
 		batch_size = int(input("input batch size[1:10]: \n "))
-		while batch_size <= 0 or batch_size >= 10:
+		while batch_size <= 0 or batch_size > 10:
 			print('Invalid Batch Size')
 			batch_size = int(input("input batch size[1:10]: \n "))
 		bench_file = input("input circuit bench file name: \n ")
