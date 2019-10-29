@@ -868,9 +868,9 @@ def fault_coverage(batch_size, bench_file, flist):
 				# column = 0
 				# TO DO PRINT to csv file
 				with open('f_cvg.csv', 'a') as csvFile:
-					writer = csv.writer(csvFile)
+					writer = csv.writer(csvFile, lineterminator='\n')
 					if row_csv:
-						writer.writerow(row_csv)
+						writer.writerow(row_csv, lineterminator='\n')
 				row_csv = []
 				print("column reset:" + str(column) + "\n")  # debug
 				break
