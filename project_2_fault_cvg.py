@@ -655,9 +655,14 @@ def tv_generation(bench_file, integer_seed):
 	temp = integer_seed
 	# Generate 255 test vectors
 	for i in range(255):
+		if len(decimaltobinary(temp)) > Number_of_input_bits:
+			temp = 0
+		else:
+			temp = temp
 		binary_value = decimaltobinary(temp)
 		rem = Number_of_input_bits - len(binary_value)
 		binary_value = '0' * rem + binary_value
+		binary_value = binary_value[::-1]
 		# Writing in Output file to generate TV_A.txt
 		outputfile.write(binary_value + '\n')
 		# Incrementing Counter
@@ -669,6 +674,10 @@ def tv_generation(bench_file, integer_seed):
 	print('Writing in TV_B.txt...')
 	print('Done')
 	for i in range(255):
+		if len(decimaltobinary(temp)) > Number_of_input_bits:
+			temp = 0
+		else:
+			temp = temp
 		if (temp == 256):
 			temp = 0
 		else:
@@ -680,6 +689,7 @@ def tv_generation(bench_file, integer_seed):
 		# determining and looping the number of times it needs to be appended
 		for j in range(math.ceil(Number_of_input_bits / 8)):
 			binary_value = binary_value + binary_value
+			binary_value = binary_value[::-1]
 		outputfile.write(binary_value[0:Number_of_input_bits] + '\n')
 		temp += 1
 	# generating TV_C.txt
@@ -709,8 +719,10 @@ def tv_generation(bench_file, integer_seed):
 			# append zeros to value
 			binary_value = '0' * rem + binary_value
 			if (bits_per_line + 8 <= Number_of_input_bits):
+				binary_value = binary_value[::-1]
 				outputfile.write(binary_value)
 			else:
+				binary_value = binary_value[::-1]
 				outputfile.write(binary_value[0:(Number_of_input_bits - bits_per_line)])
 				outputfile.write('\n')
 			bits_per_line += 8
@@ -758,7 +770,7 @@ def tv_generation(bench_file, integer_seed):
 				outputfile.write('\n')
 			bits_per_line += 8
 			temp1 = lfsr(decimaltobinary(temp1))
-		temp =lfsr(decimaltobinary(temp))
+		temp = lfsr(decimaltobinary(temp))
 
 
 def fault_coverage(batch_size, bench_file, flist):
