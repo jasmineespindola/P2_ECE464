@@ -3,7 +3,12 @@ import csv
 import math
 import os
 unnamedSA = []
-
+gl_a_f_list = []
+gl_b_f_list = []
+gl_c_f_list = []
+gl_d_f_list = []
+gl_e_f_list = []
+global_fault_list = [gl_a_f_list, gl_b_f_list, gl_c_f_list, gl_d_f_list, gl_e_f_list]
 
 # Function List:
 # 1. netRead: read the benchmark file and build circuit netlist
@@ -396,7 +401,7 @@ def read_flist(flist_Input):
 # input: list of prev faults covered from prev batches
 # output: % faults covered by curr/prev batch
 
-def fault_sim_result(cktFile, flist, tv_file, prev_faults):
+def fault_sim_result(cktFile, flist, tv_file, column):
 	circuit = netRead(cktFile)
 	# keep an initial (unassigned any value) copy of the circuit for an easy reset
 	newCircuit = circuit
@@ -506,25 +511,29 @@ def fault_sim_result(cktFile, flist, tv_file, prev_faults):
 	# JEM printing summary of faults found
 	# delete flist as u find faults/add to faults_Found
 	for i in faults_Found:
+		if i not in global_fault_list[column]:
+			global_fault_list[column].append(i)
 		if (i in flist):
 			# add to faults_Found JEM DEBUG
 			flist.remove(i)
 	undetectedFaults = len(flist)
+	for i in global_fault_list[column]:
+		if i not in faults_Found:
+			faults_Found.append(i)
 	total_faults_found = len(faults_Found)
 	# make list of undetected faults JEM #comment out test next line
-	#fs_result.write("\n\ntotal detected faults: " + str(total_faults_found) + "\n")
+	# fs_result.write("\n\ntotal detected faults: " + str(total_faults_found) + "\n")
 	# for detected_fault in faults_Found: #debug
 	# fs_result.write('%s\n' % detected_fault) #debug
 	# print(*faults_Found, sep ="\n") debug
-
 	# comment out test next line
-	#fs_result.write("\n\nundetected faults: " + str(undetectedFaults) + "\n")
-	#for undetected_fault in flist: #comment out test next line
+	# fs_result.write("\n\nundetected faults: " + str(undetectedFaults) + "\n")
+	# for undetected_fault in flist: #comment out test next line
 		# fs_result.write('%s\n' % undetected_fault)
 	# fs_result.write(*flist, sep ="\n")
 	# print fault list JEM DEBUG
 	percentFaultsFound = 100 * float(total_faults_found) / float(totalNumFaultsPossible)
-	#fs_result.write("\n\nfault coverage: " + str(total_faults_found) + "/" + str(totalNumFaultsPossible) + " = " + str(percentFaultsFound) + "% \n")  # JEM
+	# fs_result.write("\n\nfault coverage: " + str(total_faults_found) + "/" + str(totalNumFaultsPossible) + " = " + str(percentFaultsFound) + "% \n")  # JEM
 	# closing fault sim result file
 	#fs_result.close()
 	return percentFaultsFound
@@ -842,7 +851,7 @@ def fault_coverage(batch_size, bench_file, flist):
 			# close temp for write and open for read
 			temp_tv_file.close()
 			temp_tv_file = open("temp_tv.txt", "r")
-			percent_covered = fault_sim_result(bench_file, flist, temp_tv_file, prev_faults_found)
+			percent_covered = fault_sim_result(bench_file, flist, temp_tv_file, column)
 			#  TODO - add percent to line
 			if column == 0:
 				row_csv.append(" ")
