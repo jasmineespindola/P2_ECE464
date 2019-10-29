@@ -289,6 +289,7 @@ def gateCalc(circuit, node):
 # -------------------------------------------------------------------------------------------------------------------- #
 # FUNCTION: Updating the circuit dictionary with the input line, and also resetting the gates and output lines
 def inputRead(circuit, line):
+	print("line=" + line + "\n")
 	# Checking if input bits are enough for the circuit
 	if len(line) < circuit["INPUT_WIDTH"][1]:
 		return -1
@@ -368,15 +369,40 @@ def basic_sim(circuit):
 	return circuit
 
 
+# -------------------------------------------------------------------------------------------------------------------- #
+# FUNCTION: read_flist
+def read_flist(flist_Input):
+	flistFile = open(flist_Input, "r")
+	fault_list = list()
+
+	for line in flistFile:
+		if (line == "\n"):
+			continue
+		if (line[0] == "#"):
+			continue
+		# Removing the the newlines at the end and then output it to the txt file
+		line = line.replace("\n", "")
+		# Removing spaces
+		line = line.replace(" ", "")
+		line = line.upper()
+		fault_list.append(line)
+
+	flistFile.close()
+	return fault_list
+
+
 ########################################################################################################################
 # input: list of prev faults covered from prev batches
 # output: % faults covered by curr/prev batch
 
 def fault_sim_result(circuit, flist, tv_file, prev_faults):
+	flist = read_flist(flist)
+	totalNumFaultsPossible = len(flist)
 	tvNumber = 0
 	# initializing list to add faults found
 	faults_Found = []
-
+	#print(" tv file:" + tv_file + "\n")
+	#print(" flist file:" + flist + "\n")
 	# Runs the simulator for each line of the input file aka tv_file
 	for line in tv_file:
 		# Reset circuit before start
@@ -394,7 +420,7 @@ def fault_sim_result(circuit, flist, tv_file, prev_faults):
 
 		# Removing the the newlines at the end and then output it to the txt file
 		line = line.replace("\n", "")
-		outputFile.write(line)  # write the TV to the output
+		#outputFile.write(line)  # write the TV to the output
 
 		# Removing spaces
 		line = line.replace(" ", "")
@@ -495,11 +521,9 @@ def fault_sim_result(circuit, flist, tv_file, prev_faults):
 	# fs_result.write(*flist, sep ="\n")
 	# print fault list JEM DEBUG
 	percentFaultsFound = 100 * float(total_faults_found) / float(totalNumFaultsPossible)
-	fs_result.write("\n\nfault coverage: " + str(total_faults_found) + "/" + str(totalNumFaultsPossible) + " = " + str(
-		percentFaultsFound) + "% \n")  # JEM
-
+	#fs_result.write("\n\nfault coverage: " + str(total_faults_found) + "/" + str(totalNumFaultsPossible) + " = " + str(percentFaultsFound) + "% \n")  # JEM
 	# closing fault sim result file
-	fs_result.close()
+	#fs_result.close()
 	return percentFaultsFound
 
 
@@ -765,20 +789,28 @@ def fault_coverage(batch_size, bench_file, flist):
 		current_batch_running = batch + 1
 		print("currently testing batch #:" + str(current_batch_running) + "\n")
 		tv_num = 0
-		#create temp list of faults with n faults and make into tv_file
-		while tv_num < length_TV_list:
+		# create temp list of faults with n faults and make into tv_file
+		# while loop go through TVA,B,C,D E after each batch is done
+		while tv_num < 5:
 			current_tv_file = TVS[tv_num]
 			netFile = open(current_tv_file, "r")
-			temp_tv_file = open("temp_tv.txt", "w")
-			print("opened" + current_tv_file + "\n")
+			temp_tv_file = open("temp_tv.txt", "w+")
+			# print("opened" + current_tv_file + "\n")
 			i = 0
 			while i < batch_size:
 				# add real_tv_line to temp_tv_file
+				# print(" current tv file: " + netFile + "\n")
+				lines = netFile.readlines()
+				# print("line is: " + line)
+				temp_tv_file.write(lines[real_tv_line])
 				real_tv_line += 1
 				i += 1
 			# calling fault_sim_result after tem_tv_file generated for each column
 			percent_covered = fault_sim_result(bench_file, flist, temp_tv_file, prev_faults_found)
-				# run prev script and append every time new tvs and pull new fault cvg value
+			if tv_num < length_TV_list:
+				tv_num += 1
+			elif tv_num == 4:
+				tv_num = 0
 				# need to save variable in list of prev percent covered by list tvs[]
 
 
