@@ -808,7 +808,7 @@ def fault_coverage(batch_size, bench_file, flist):
 			print("column")
 			current_tv_file = TVS[column]
 			tvFile = open(current_tv_file, "r")
-			temp_tv_file = open("temp_tv.txt", "w+")
+			temp_tv_file = open("temp_tv.txt", "w+")  #sai- TODO
 			# print("opened" + current_tv_file + "\n")
 			lines_in_tv_file = tvFile.readlines()
 			print("just took in file and read lines for:" + current_tv_file + "\n") # debug
