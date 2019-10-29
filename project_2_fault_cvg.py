@@ -2,6 +2,8 @@ from __future__ import print_function
 import csv
 import math
 import os
+unnamedSA = []
+
 
 # Function List:
 # 1. netRead: read the benchmark file and build circuit netlist
