@@ -290,7 +290,7 @@ def gateCalc(circuit, node):
 # FUNCTION: Updating the circuit dictionary with the input line, and also resetting the gates and output lines
 def inputRead(circuit, line):
 	print("line=" + line + "\n")
-	
+
 	# Checking if input bits are enough for the circuit
 	if len(line) < circuit["INPUT_WIDTH"][1]:
 		return -1
@@ -675,10 +675,6 @@ def tv_generation(bench_file, integer_seed):
 	print('Writing in TV_B.txt...')
 	print('Done')
 	for i in range(255):
-		if len(decimaltobinary(temp)) > Number_of_input_bits:
-			temp = 0
-		else:
-			temp = temp
 		if (temp == 256):
 			temp = 0
 		else:
