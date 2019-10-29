@@ -518,9 +518,9 @@ def fault_sim_result(cktFile, flist_total, tv_file, column):
 			# add to faults_Found JEM DEBUG
 			flist.remove(i)
 	undetectedFaults = len(flist)
-	#  for i in global_fault_list[column]:
-		#  if i not in faults_Found:
-			#  faults_Found.append(i)           #  jas UNDO UNDO UNDO UNDO UNDOOOOO JUST  TESTING
+	for i in global_fault_list[column]:
+		if i not in faults_Found:
+			faults_Found.append(i)
 
 	total_faults_found = len(faults_Found)
 	# make list of undetected faults JEM #comment out test next line
@@ -856,7 +856,7 @@ def fault_coverage(batch_size, bench_file, flist):
 			percent_covered = fault_sim_result(bench_file, flist, temp_tv_file, column)
 			#  TODO - add percent to line
 			if column == 0:
-				row_csv.append(" ")
+				row_csv.append(current_batch_running)
 			row_csv.append(percent_covered)
 			print("percent covered:" + str(percent_covered) + " \n")
 			if column != 4:
@@ -869,7 +869,8 @@ def fault_coverage(batch_size, bench_file, flist):
 				# TO DO PRINT to csv file
 				with open('f_cvg.csv', 'a') as csvFile:
 					writer = csv.writer(csvFile)
-					writer.writerow(row_csv)
+					if row_csv:
+						writer.writerow(row_csv)
 				row_csv = []
 				print("column reset:" + str(column) + "\n")  # debug
 				break
